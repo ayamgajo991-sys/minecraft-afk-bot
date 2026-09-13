@@ -1,6 +1,7 @@
+require('dotenv').config(); // PENTING: Membaca token aman dari file .env
 const mineflayer = require('mineflayer');
 const { Client, GatewayIntentBits } = require('discord.js');
-const express = require('express'); // Menambahkan Express untuk UptimeRobot
+const express = require('express');
 
 // --- SETUP WEB SERVER UNTUK UPTIMEROBOT ---
 const app = express();
@@ -25,7 +26,7 @@ const CONFIG = {
     password: 'haekal09'
   },
   discord: {
-    token: 'MTU0ODU2Mjk2MDIzNzA2ODM4OQ.Gld0CB.YpVfB7o6-_CcCBx2nlZCuqtUZIYQSOvlmezL80', 
+    token: process.env.DISCORD_TOKEN, // Aman dari bocor ke GitHub!
     channelId: '1492066167651831909'
   }
 };
