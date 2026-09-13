@@ -1,4 +1,3 @@
-require('dotenv').config(); // PENTING: Membaca token aman dari file .env
 const mineflayer = require('mineflayer');
 const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
@@ -26,7 +25,8 @@ const CONFIG = {
     password: 'haekal09'
   },
   discord: {
-    token: process.env.DISCORD_TOKEN, // Aman dari bocor ke GitHub!
+    // TOKEN DIMASUKKAN LANGSUNG (Tanpa .env)
+    token: 'MTU0ODU2Mjk2MDIzNzA2ODM4OQ.G79Xrm.-LuJw8WBTEL3X5t7DhYcHsnMxC5UCJGqBiqju8',
     channelId: '1492066167651831909'
   }
 };
@@ -40,8 +40,8 @@ const client = new Client({
 });
 
 let mcBot;
-let reconnecting = false; 
-let dropInterval = null; 
+let reconnecting = false;
+let dropInterval = null;
 
 function sendToDiscord(text) {
   const channel = client.channels.cache.get(CONFIG.discord.channelId);
@@ -56,7 +56,7 @@ function triggerJoinQueue() {
 
 function executeDropProcess() {
   if (!mcBot) return;
-  
+
   const spawnerBlock = mcBot.findBlock({
     matching: mcBot.registry.blocksByName.spawner.id,
     maxDistance: 5
@@ -93,9 +93,9 @@ client.on('messageCreate', (message) => {
         message.reply('⚠️ **Auto-drop sudah aktif!** Ketik `!drop stop` untuk menghentikannya.');
         return;
       }
-      
+
       message.reply('⚙️ **Auto-Drop Bone diaktifkan!** Bot akan membuka spawner dan mengklik tombol **Drop All** setiap 10 detik.');
-      
+
       executeDropProcess();
 
       dropInterval = setInterval(() => {
@@ -148,9 +148,9 @@ client.on('messageCreate', (message) => {
 // --- CORE BOT MINECRAFT ---
 function startMcBot() {
   if (reconnecting) return;
-  
+
   console.log('🤖 Menghubungkan ke server Minecraft...');
-  
+
   mcBot = mineflayer.createBot({
     host: CONFIG.mc.host,
     port: CONFIG.mc.port,
@@ -173,7 +173,7 @@ function startMcBot() {
     setTimeout(() => {
       sendToDiscord(`🔑 **Mengirim perintah Login...**`);
       mcBot.chat(`/login ${CONFIG.mc.password}`);
-      
+
       setTimeout(() => {
         triggerJoinQueue();
       }, 3000);
@@ -191,18 +191,18 @@ function startMcBot() {
     if (title.includes('Spawners') || title.includes('Spawner')) {
       setTimeout(async () => {
         try {
-          await mcBot.clickWindow(13, 0, 0); 
+          await mcBot.clickWindow(13, 0, 0);
         } catch (err) {}
       }, 800);
     }
     else if (title.includes('Storage')) {
       setTimeout(async () => {
         try {
-          await mcBot.clickWindow(53, 0, 0); 
+          await mcBot.clickWindow(53, 0, 0);
           sendToDiscord('🦴 **Berhasil mengklik Drop All di Spawner!**');
-          
+
           setTimeout(() => {
-            mcBot.closeWindow(window); 
+            mcBot.closeWindow(window);
           }, 600);
         } catch (err) {}
       }, 800);
@@ -224,7 +224,7 @@ function startMcBot() {
       clearInterval(dropInterval);
       dropInterval = null;
     }
-    
+
     sendToDiscord('🔌 **Bot terputus. Mencoba reconnect dalam 10 detik...**');
     reconnecting = true;
     setTimeout(() => {
